@@ -6,6 +6,7 @@ log = logging.getLogger('spel_validation')
 log.setLevel(logging.INFO)
 
 
+@pytest.mark.el7
 @pytest.mark.hvm
 def test_10_gigabit(host):
     interface = host.interface('eth0')
@@ -18,6 +19,7 @@ def test_root_volume_is_resized(host):
     assert pv_free.exit_status == 0
 
 
+@pytest.mark.el7
 @pytest.mark.parametrize("name", [
     ("aws-amitools-ec2"),
     ("aws-apitools-as"),
@@ -67,6 +69,7 @@ def test_repo_access(host):
     assert repos.exit_status == 0
 
 
+@pytest.mark.el7
 def test_boot_is_mounted(host):
     boot = host.mount_point('/boot')
     assert boot.exists
