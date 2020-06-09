@@ -39,11 +39,11 @@ def test_common_aws_pkgs(host, name):
     assert pkg.is_installed
 
 
-@pytest.mark.el7
+@pytest.mark.el8
 @pytest.mark.parametrize("name", [
     ("aws-scripts-ses")
 ])
-def test_el7_aws_pkgs(host, name):
+def test_el8_aws_pkgs(host, name):
     pkg = host.package(name)
     if pkg.is_installed:
         log.info(
@@ -79,23 +79,23 @@ def test_tmp_mount_properties(host):
     assert tmp.filesystem == 'tmpfs'
 
 
-@pytest.mark.el7
-def test_el7_selinux_enforcing(host):
+@pytest.mark.el8
+def test_el8_selinux_enforcing(host):
     cmd = 'test $(getenforce) = \'Enforcing\''
     selinux_permissive = host.run(cmd)
     assert selinux_permissive.exit_status == 0
 
 
-@pytest.mark.el7
+@pytest.mark.el8
 @pytest.mark.fips_enabled
-def test_el7_fips_enabled(host):
+def test_el8_fips_enabled(host):
     fips = host.file('/proc/sys/crypto/fips_enabled')
     assert fips.exists and fips.content.strip() == b'1'
 
 
-@pytest.mark.el7
+@pytest.mark.el8
 @pytest.mark.fips_disabled
-def test_el7_fips_disabled(host):
+def test_el8_fips_disabled(host):
     fips = host.file('/proc/sys/crypto/fips_enabled')
     assert not fips.exists or fips.content.strip() == b'0'
 
@@ -119,7 +119,7 @@ def test_python3_installed(host, names):
         {'pkg': pkg.name, 'version': pkg.version, 'release': pkg.release})
 
 
-@pytest.mark.el7
+@pytest.mark.el8
 @pytest.mark.parametrize("realpath,link", [
     ('/usr/bin/python3.6', '/usr/bin/python3')
 ])
@@ -143,7 +143,7 @@ def test_python3_version(host, version):
     assert python3_version.stdout.strip().split()[1].startswith(version)
 
 
-@pytest.mark.el7
+@pytest.mark.el8
 def test_timedatectl_dbus_status(host):
     cmd = 'timedatectl'
     timedatectl = host.run(cmd)
@@ -152,7 +152,7 @@ def test_timedatectl_dbus_status(host):
     assert timedatectl.exit_status == 0
 
 
-@pytest.mark.el7
+@pytest.mark.el8
 def test_var_run_symlink(host):
     var_run_symlink = host.file('/var/run').linked_to
     assert var_run_symlink == '/run'

@@ -10,7 +10,7 @@ FIPS_DISABLED = set(['true', 'TRUE', '1', 'on'])
 
 # Markers
 VIRTUALIZATION_MARKERS = set(['hvm', 'paravirtual'])
-PLAT_MARKERS = set(['el7'])
+PLAT_MARKERS = set(['el8'])
 FIPS_MARKERS = set(['fips_enabled', 'fips_disabled'])
 
 # Platform-specific globals
@@ -27,7 +27,7 @@ except urllib.error.URLError:
 
 def pytest_configure(config):
     config.addinivalue_line(
-        "markers", "el7: mark test to run only on el7 platforms"
+        "markers", "el8: mark test to run only on el8 platforms"
     )
     config.addinivalue_line(
         "markers", "hvm: mark test to run only on hvm instances"
