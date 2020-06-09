@@ -18,40 +18,6 @@ def test_root_volume_is_resized(host):
     assert pv_free.exit_status == 0
 
 
-@pytest.mark.parametrize("name", [
-    ("aws-amitools-ec2"),
-    ("aws-apitools-as"),
-    ("aws-apitools-cfn"),
-    ("aws-apitools-common"),
-    ("aws-apitools-ec2"),
-    ("aws-apitools-elb"),
-    ("aws-apitools-iam"),
-    ("aws-apitools-mon"),
-    ("aws-apitools-rds"),
-    ("aws-cfn-bootstrap")
-])
-def test_common_aws_pkgs(host, name):
-    pkg = host.package(name)
-    if pkg.is_installed:
-        log.info(
-            '%s',
-            {'pkg': pkg.name, 'version': pkg.version, 'release': pkg.release})
-    assert pkg.is_installed
-
-
-@pytest.mark.el8
-@pytest.mark.parametrize("name", [
-    ("aws-scripts-ses")
-])
-def test_el8_aws_pkgs(host, name):
-    pkg = host.package(name)
-    if pkg.is_installed:
-        log.info(
-            '%s',
-            {'pkg': pkg.name, 'version': pkg.version, 'release': pkg.release})
-    assert pkg.is_installed
-
-
 def test_aws_cli_is_in_path(host):
     cmd = 'aws --version'
     aws = host.run(cmd)
@@ -65,11 +31,6 @@ def test_repo_access(host):
     log.info('stdout:\n%s', repos.stdout)
     log.info('stderr:\n%s', repos.stderr)
     assert repos.exit_status == 0
-
-
-def test_boot_is_mounted(host):
-    boot = host.mount_point('/boot')
-    assert boot.exists
 
 
 def test_tmp_mount_properties(host):
@@ -159,9 +120,7 @@ def test_var_run_symlink(host):
 
 
 @pytest.mark.parametrize("service", [
-    ("autotune.service"),
     ("amazon-ssm-agent.service"),
-    ("hibinit-agent.service"),
     ("ec2-instance-connect.service")
 ])
 
