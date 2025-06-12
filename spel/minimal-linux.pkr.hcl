@@ -224,6 +224,30 @@ variable "azure_cloud_environment_name" {
   default     = "Public"
 }
 
+variable "azure_custom_managed_image_name_rhel8" {
+  description = "Name of a custom managed image to use as the base image for RHEL8 builds"
+  type        = string
+  default     = null
+}
+
+variable "azure_custom_managed_image_name_rhel9" {
+  description = "Name of a custom managed image to use as the base image for RHEL9 builds"
+  type        = string
+  default     = null
+}
+
+variable "azure_custom_managed_image_resource_group_name_rhel8" {
+  description = "Name of the resource group for the custom image in `azure_custom_managed_image_name_rhel8`"
+  type        = string
+  default     = null
+}
+
+variable "azure_custom_managed_image_resource_group_name_rhel9" {
+  description = "Name of the resource group for the custom image in `azure_custom_managed_image_name_rhel9`"
+  type        = string
+  default     = null
+}
+
 variable "azure_image_offer" {
   description = "Name of the publisher offer to use for your base image (Azure Marketplace Images only)"
   type        = string
@@ -293,6 +317,7 @@ variable "azure_vm_size" {
   type    = string
   default = "Standard_DS5_v2"
 }
+
 
 ###
 # Variables for Openstack builders
@@ -601,33 +626,6 @@ variable "amigen9_uefi_dev_label" {
   default     = "UEFI_DISK"
 }
 
-
-###
-# Variables used for Azure-based builds
-###
-variable "azure_custom_managed_image_name_rhel8" {
-  description = "Name of a custom managed image to use as the base image for RHEL8 builds"
-  type        = string
-  default     = null
-}
-
-variable "azure_custom_managed_image_resource_group_name_rhel8" {
-  description = "Name of the resource group for the custom image in `azure_custom_managed_image_name_rhel8`"
-  type        = string
-  default     = null
-}
-
-variable "azure_custom_managed_image_name_rhel9" {
-  description = "Name of a custom managed image to use as the base image for RHEL9 builds"
-  type        = string
-  default     = null
-}
-
-variable "azure_custom_managed_image_resource_group_name_rhel9" {
-  description = "Name of the resource group for the custom image in `azure_custom_managed_image_name_rhel9`"
-  type        = string
-  default     = null
-}
 
 
 ###
