@@ -903,6 +903,15 @@ build {
     name                                     = "minimal-rhel-8-image"
   }
 
+  source "azure-arm.base" {
+    azure_tags = {
+      Description = format(local.description, "RHEL 9 image")
+    }
+    custom_managed_image_name                = var.azure_custom_managed_image_name_rhel9
+    custom_managed_image_resource_group_name = var.azure_custom_managed_image_resource_group_name_rhel9
+    name                                     = "minimal-rhel-9-image"
+  }
+
   # Common provisioners
   provisioner "shell" {
     environment_vars = [
