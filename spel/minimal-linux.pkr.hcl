@@ -1092,6 +1092,43 @@ build {
     ]
   }
 
+  # Azure EL9 provisioners
+  provisioner "shell" {
+    environment_vars = [
+      "SPEL_AMIGEN9SOURCE=${var.amigen9_source_url}",
+      "SPEL_AMIGENBOOTDEVLBL=${var.amigen9_boot_dev_label}",
+      "SPEL_AMIGENBOOTDEVSZ=${var.amigen9_boot_dev_size}",
+      "SPEL_AMIGENBOOTDEVSZMLT=${var.amigen9_boot_dev_size_mult}",
+      "SPEL_AMIGENBRANCH=${var.amigen9_source_branch}",
+      "SPEL_AMIGENCHROOT=/mnt/ec2-root",
+      "SPEL_AMIGENMANFST=${var.amigen9_package_manifest}",
+      "SPEL_AMIGENPKGGRP=${local.amigen9_package_groups}",
+      "SPEL_AMIGENREPOS=${local.amigen9_repo_names}",
+      "SPEL_AMIGENREPOSRC=${local.amigen9_repo_sources}",
+      "SPEL_AMIGENROOTNM=${var.amigen9_filesystem_label}",
+      "SPEL_AMIGENSTORLAY=${local.amigen9_storage_layout}",
+      "SPEL_AMIGENUEFIDEVLBL=${var.amigen9_uefi_dev_label}",
+      "SPEL_AMIGENUEFIDEVSZ=${var.amigen9_uefi_dev_size}",
+      "SPEL_AMIGENVGNAME=RootVG",
+      "SPEL_AWSCFNBOOTSTRAP=${var.amigen_aws_cfnbootstrap}",
+      "SPEL_AWSCLIV1SOURCE=${var.amigen_aws_cliv1_source}",
+      "SPEL_AWSCLIV2SOURCE=${var.amigen_aws_cliv2_source}",
+      "SPEL_CLOUDPROVIDER=aws",
+      "SPEL_EXTRARPMS=${local.amigen9_extra_rpms}",
+      "SPEL_FIPSDISABLE=${var.amigen_fips_disable}",
+      "SPEL_GRUBTMOUT=${var.amigen_grub_timeout}",
+      "SPEL_USEDEFAULTREPOS=${var.amigen_use_default_repos}",
+      "SPEL_USEROOTDEVICE=false",
+    ]
+    execute_command = "{{ .Vars }} sudo -E /bin/sh '{{ .Path }}'"
+    only = [
+      "azure-arm.minimal-rhel-9-image",
+    ]
+    scripts = [
+      "${path.root}/scripts/amigen9-build.sh",
+    ]
+  }
+
   provisioner "shell" {
     execute_command = "chmod +x {{ .Path }}; {{ .Vars }} sudo -E sh -ex '{{ .Path }}'"
     inline = [
