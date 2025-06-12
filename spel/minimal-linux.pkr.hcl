@@ -611,13 +611,23 @@ variable "azure_custom_managed_image_name_rhel8" {
   default     = null
 }
 
-
 variable "azure_custom_managed_image_resource_group_name_rhel8" {
   description = "Name of the resource group for the custom image in `azure_custom_managed_image_name_rhel8`"
   type        = string
   default     = null
 }
 
+variable "azure_custom_managed_image_name_rhel9" {
+  description = "Name of a custom managed image to use as the base image for RHEL9 builds"
+  type        = string
+  default     = null
+}
+
+variable "azure_custom_managed_image_resource_group_name_rhel9" {
+  description = "Name of the resource group for the custom image in `azure_custom_managed_image_name_rhel9`"
+  type        = string
+  default     = null
+}
 
 
 ###
