@@ -953,6 +953,7 @@ build {
       "amazon-ebssurrogate.minimal-centos-9stream-hvm",
       "amazon-ebssurrogate.minimal-ol-9-hvm",
       "amazon-ebssurrogate.minimal-rhel-9-hvm",
+      "azure-arm.minimal-rhel-9-image",
     ]
   }
 
