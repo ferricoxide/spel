@@ -601,9 +601,6 @@ set -x
 set -e
 set -o pipefail
 
-echo "Restarting networkd/resolved for DNS resolution"
-systemctl restart systemd-networkd systemd-resolved
-
 # Ensure build-tools directory exists
 if [[ ! -d ${ELBUILD} ]]
 then
