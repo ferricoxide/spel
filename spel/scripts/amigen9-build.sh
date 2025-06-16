@@ -560,13 +560,21 @@ function PrepBuildDevice {
 
     # Select the disk to use for the build
     err_exit "Detecting the root device..." NONE
-    ROOT_DEV="$( grep ' / ' /proc/mounts | cut -d " " -f 1 )"
+    ROOT_DEV="$(
+      grep -E ' (/|/oldroot) ' /proc/mounts | \
+      grep -v none | \
+      cut -d " " -f 1
+    )"
     if [[ ${ROOT_DEV} == /dev/nvme* ]]
     then
       ROOT_DISK="${ROOT_DEV//p*/}"
       IFS=" " read -r -a DISKS <<< "$(echo /dev/nvme*n1)"
+    elif [[ ${ROOT_DEV} == /dev/sd* ]]
+    then
+      ROOT_DISK="${ROOT_DEV//[0-9]*/}"
+      IFS=" " read -r -a DISKS <<< "$( echo /dev/sd[a-z]*1 )"
     else
-      err_exit "ERROR: This script supports nvme device naming. Could not determine root disk from device name: ${ROOT_DEV}"
+      err_exit "ERROR: This script only supports 'sd' and 'nvme' device-naming. Could not determine root disk from device name: ${ROOT_DEV}"
     fi
 
     if [[ "$USEROOTDEVICE" = "true" ]]
