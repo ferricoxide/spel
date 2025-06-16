@@ -970,6 +970,7 @@ build {
     start_retry_timeout = "15m"
     only = [
       "azure-arm.minimal-rhel-8-image",
+      "azure-arm.minimal-rhel-9-image",
     ]
   }
 
@@ -980,6 +981,7 @@ build {
     ]
     only = [
       "azure-arm.minimal-rhel-8-image",
+      "azure-arm.minimal-rhel-9-image",
     ]
   }
 
@@ -993,6 +995,7 @@ build {
     ]
     only = [
       "azure-arm.minimal-rhel-8-image",
+      "azure-arm.minimal-rhel-9-image",
     ]
   }
 
@@ -1157,6 +1160,7 @@ build {
     ]
     only = [
       "azure-arm.minimal-rhel-8-image",
+      "azure-arm.minimal-rhel-9-image",
     ]
     skip_clean = true
   }
