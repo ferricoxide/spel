@@ -990,6 +990,8 @@ build {
   provisioner "shell" {
     execute_command = "{{ .Vars }} sudo -E /bin/sh -ex '{{ .Path }}'"
     inline = [
+      "echo Unmounting /oldroot/efi",
+      "test $( grep -c /oldroot/efi /proc/mounts ) -eq 0 || umount /oldroot/efi",
       "echo Unmounting /oldroot",
       "test $( grep -c /oldroot /proc/mounts ) -eq 0 || umount /oldroot",
     ]
