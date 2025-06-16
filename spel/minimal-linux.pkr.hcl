@@ -1123,6 +1123,7 @@ build {
       "SPEL_AMIGENBOOTDEVSZ=${var.amigen9_boot_dev_size}",
       "SPEL_AMIGENBOOTDEVSZMLT=${var.amigen9_boot_dev_size_mult}",
       "SPEL_AMIGENBRANCH=${var.amigen9_source_branch}",
+      "SPEL_AMIGENBUILDDEV=/dev/sda",
       "SPEL_AMIGENCHROOT=/mnt/ec2-root",
       "SPEL_AMIGENMANFST=${var.amigen9_package_manifest}",
       "SPEL_AMIGENPKGGRP=${local.amigen9_package_groups}",
