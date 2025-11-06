@@ -270,6 +270,12 @@ variable "azure_cloud_environment_name" {
   default     = "Public"
 }
 
+variable "azure_hyperv_generation" {
+  description = "The generation V1 or V2 of hyperv - BIOS-boot and EFI-boot, respectively"
+  type = string
+  default = "V1"
+}
+
 variable "azure_image_offer" {
   description = "Name of the publisher offer to use for your base image (Azure Marketplace Images only)"
   type        = string
@@ -797,6 +803,24 @@ source "azure-arm" "base" {
   virtual_network_resource_group_name    = var.azure_virtual_network_resource_group_name
   virtual_network_subnet_name            = var.azure_virtual_network_subnet_name
   vm_size                                = var.azure_vm_size
+}
+
+source "azure-chroot" "base" {
+  use_azure_cli_auth     = true
+  cloud_environment_name = var.azure_cloud_environment_name
+  from_scratch = true
+
+  data_disk_storage_account_type = "Premium_LRS"
+
+  pre_mount_commands   = [
+    "echo 'Mandatory pre-mount command'",
+  ]
+  manual_mount_command = "chmod +x /packerbuild/test-resources/scripts/mount.sh && export SOURCE_NAME_ENV='${source.name}' && export SPEL_AMIGENBUILDDEV='{{ .Device }}' && bash -x /packerbuild/test-resources/scripts/mount.sh"
+  os_disk_size_gb      = var.spel_root_volume_size
+
+  image_resource_id = "/subscriptions/${var.azure_subscription_id}/resourceGroups/${var.azure_managed_image_resource_group_name}/providers/Microsoft.Compute/images/${var.azure_image_publisher}-${var.azure_image_sku}-{{timestamp}}"
+
+  image_hyperv_generation = var.azure_hyperv_generation
 }
 
 source "openstack" "base" {
