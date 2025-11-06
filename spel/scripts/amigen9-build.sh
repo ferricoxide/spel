@@ -200,7 +200,17 @@ function BuildChroot {
     local STATUS_MSG
 
     # Prepare the build device
-    PrepBuildDevice
+    if [[ $(
+            sed ':a;N;$!ba;s/\n/ /g' <(
+                dmidecode -s chassis-manufacturer && \
+                dmidecode -s chassis-version
+            )
+        ) =~ "Microsoft Corporation Hyper-V" ]]
+    then
+        PrepBuildDevice-Azure
+    else
+        PrepBuildDevice
+    fi
 
     # Invoke disk-partitioner
     bash -euxo pipefail "${ELBUILD}"/$( ComposeDiskSetupString ) || \
@@ -612,6 +622,64 @@ function PrepBuildDevice {
     then
       ROOT_DISK="${ROOT_DEV%?}"
       mapfile -t DISKS < <( echo /dev/sd[a-z] )
+    else
+      err_exit "ERROR: This script supports sd or nvme device naming, only. Could not determine root disk from device name: ${ROOT_DEV}"
+    fi
+
+    if [[ "$USEROOTDEVICE" = "true" ]]
+    then
+      AMIGENBUILDDEV="${ROOT_DISK}"
+    elif [[ ${#DISKS[@]} -gt 2 ]]
+    then
+      err_exit "ERROR: This script supports at most 2 attached disks. Detected ${#DISKS[*]} disks"
+    else
+      AMIGENBUILDDEV="$(echo "${DISKS[@]/$ROOT_DISK}" | tr -d '[:space:]')"
+    fi
+    err_exit "Using ${AMIGENBUILDDEV} as the build device." NONE
+
+    # Make sure the disk has a GPT label
+    err_exit "Checking ${AMIGENBUILDDEV} for a GPT label..." NONE
+    if ! blkid "$AMIGENBUILDDEV"
+    then
+        err_exit "No label detected. Creating GPT label on ${AMIGENBUILDDEV}..." NONE
+        parted -s "$AMIGENBUILDDEV" -- mklabel gpt
+        blkid "$AMIGENBUILDDEV"
+        err_exit "Created empty GPT configuration on ${AMIGENBUILDDEV}" NONE
+    else
+        err_exit "GPT label detected on ${AMIGENBUILDDEV}" NONE
+    fi
+}
+
+function PrepBuildDevice-Azure {
+    local -a DISKS
+    local    ROOT_DEV
+    local    ROOT_DISK
+    local    WAAGENT_DISK
+
+    # Some Azure instance-types have instance-store
+    WAAGENT_DISK="$( grep -w /mnt /proc/mounts | cut -d " " -f 1 )"
+
+    # Set if no instance-storage attached
+    if [[ -z ${WAAGENT_DISK:-} ]]
+    then
+        WAAGENT_DISK="UNDEF"
+    fi
+
+    # Select the disk to use for the build
+    err_exit "Detecting the root device..." NONE
+    ROOT_DEV="$( grep ' / ' /proc/mounts | cut -d " " -f 1 )"
+
+    # Check if root-dev type is supported
+    if [[ ${ROOT_DEV} == /dev/nvme* ]]
+    then
+      echo "NVMe-based VM-types not currently supported. Aborting..."
+      exit
+    elif [[ ${ROOT_DEV} == /dev/sd* ]]
+    then
+      # shellcheck disable=SC2010
+      mapfile -t DISKS < <(
+        ls -1 /dev/sd[a-z] | grep -Ev "(${ROOT_DEV%?}|${WAAGENT_DISK%?})"
+      )
     else
       err_exit "ERROR: This script supports sd or nvme device naming, only. Could not determine root disk from device name: ${ROOT_DEV}"
     fi
